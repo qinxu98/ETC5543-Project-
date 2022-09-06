@@ -7,7 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
-  knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE,
   error = FALSE, 
@@ -20,6 +19,58 @@ knitr::opts_chunk$set(echo = FALSE,
   fig.retina = 4,
   cache = FALSE)
   
+```
+
+```{r libraries}
+library(tidyverse)
+library(ggplot2)
+library(sugarbag)
+library(cubble)
+library(here)
+library(sf)
+library(lubridate)
+```
+
+
+```{r dataset}
+#map data
+lhd_metro <- read_sf(here::here("nsw-localhealthdistricts.kml"), layer = "Metropolitan local health districts")
+lhd_rural <- read_sf(here::here("nsw-localhealthdistricts.kml"), layer = "Rural and regional NSW local health districts")
+lhd_map <- rbind(lhd_metro,lhd_rural)
+
+# confirm case data 
+confirmed_case<- read_csv("confirmed_cases_table1_location_agg.csv")
+confirmed_case<- confirmed_case %>% 
+  select("notification_date",
+         "lhd_2010_code",
+         "lhd_2010_name",
+         "confirmed_cases_count") 
+```
+
+
+```{r confirm_cases}
+# Number of confirmed cases from 2020-01-25 to 2022-08-30 - Base on local health district
+total_confirm_cases <- confirmed_case %>% 
+  group_by(lhd_2010_name) %>% 
+ summarise(Total_confirm_case = sum(confirmed_cases_count)) %>% 
+  rename( "Local health district" = lhd_2010_name)
+total_confirm_cases
+
+# Number of confirmed cases monthly from 2020-01-23 to 2022-08-30 - Base on local health district. 
+monthly_confirmed_cases<- confirmed_case %>% 
+  mutate ( month_year =  format(confirmed_case$notification_date ,"%Y-%m")) %>%  group_by(lhd_2010_name,month_year) %>% 
+ summarise(Total_confirm_case = sum(confirmed_cases_count)) %>% 
+  rename( "Local health district" = lhd_2010_name)
+monthly_confirmed_cases
+
+# Number of confirmed cases monthly from 2020-01-23 to 2022-08-30 - Base on local health district. 
+monthly_confirmed_cases<- confirmed_case %>% 
+  mutate ( month_year =  format(confirmed_case$notification_date ,"%Y-%m")) %>%  group_by(lhd_2010_name,month_year) %>% 
+ summarise(Total_confirm_case = sum(confirmed_cases_count)) %>% 
+  rename( "Local health district" = lhd_2010_name)
+monthly_confirmed_cases
+
+
 
 ```
 
