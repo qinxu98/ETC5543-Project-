@@ -88,8 +88,11 @@ lhd_month <-  merge( x = lhd_map, y = monthly_confirmed_cases , by = "Name")
 # create choropleth plot with total and monthly data 
 choropleth_plot_total <- lhd_total %>%  
   ggplot() + 
-  geom_sf(aes(fill = Total_confirm_case)) +
-  labs( title = " Choropleth map of COVID Confirm Cases accross NSW Local Health Distirct ") 
+  geom_sf(aes(fill = Total_confirm_case)) + 
+  geom_sf_label(aes(label = Name))
+  labs( title = " Choropleth map of COVID Confirm Cases accross NSW Local Health Distirct ") +
+  theme_bw() 
+  
 choropleth_plot_total
 
 head(lhd_map)
